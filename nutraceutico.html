@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nutri — Protocolo Nutraceutico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --g50:  #F0FAF4;
+      --g100: #D3F0DF;
+      --g200: #A6E0BF;
+      --g400: #4BB87A;
+      --g600: #2D8A55;
+      --g800: #1A5C38;
+      --g900: #0D3320;
+      --white: #FFFFFF;
+      --off:  #F8FAF9;
+      --ink:  #0F1A14;
+      --ink2: #2E3D35;
+      --ink3: #5E7068;
+      --ink4: #9AB0A2;
+      --border: rgba(45,138,85,0.12);
+      --border2: rgba(45,138,85,0.22);
+      --shadow: 0 1px 12px rgba(13,51,32,0.07);
+      --shadow-md: 0 4px 24px rgba(13,51,32,0.10);
+      --r: 8px;
+      --r-lg: 14px;
+      --ease: all 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 300;
+      background: var(--off);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.65;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2.5rem;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: var(--g400);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark svg { width: 18px; height: 18px; fill: white; }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .logo-text span { color: var(--g600); }
+    .header-tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--g600);
+      background: var(--g50);
+      border: 1px solid var(--g100);
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      min-height: calc(100vh - 62px);
+    }
+
+    .panel-build {
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 1.75rem 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .section-block { display: flex; flex-direction: column; gap: 0.85rem; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .badge {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--g50);
+      color: var(--g600);
+      border: 1px solid var(--g100);
+      padding: 0.12rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    .templates-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .template-card {
+      padding: 0.75rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      cursor: pointer;
+      transition: var(--ease);
+      background: var(--off);
+    }
+    .template-card:hover { border-color: var(--g400); background: var(--g50); }
+    .template-card.active { border-color: var(--g400); background: var(--g50); box-shadow: 0 0 0 3px rgba(75,184,122,0.1); }
+    .t-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ink2);
+    }
+    .t-tag {
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--g600);
+      margin-top: 2px;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink3);
+    }
+    select, input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 0.58rem 0.8rem;
+      border: 1px solid var(--border2);
+      border-radius: var(--r);
+      background: var(--off);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      appearance: none;
+      transition: var(--ease);
+      outline: none;
+    }
+    select:focus, input:focus {
+      border-color: var(--g400);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(75,184,122,0.1);
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235E7068' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-color: var(--off);
+      padding-right: 2rem;
+      cursor: pointer;
+    }
+    select:focus { background-color: var(--white); }
+
+    .supps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+    .supp-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.45rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      cursor: pointer;
+      transition: var(--ease);
+      background: var(--off);
+    }
+    .supp-item:hover { border-color: var(--g200); background: var(--g50); }
+    .supp-item input[type="checkbox"] {
+      width: auto;
+      accent-color: var(--g400);
+      cursor: pointer;
+    }
+    .supp-item span {
+      font-size: 0.78rem;
+      color: var(--ink2);
+      font-weight: 400;
+    }
+
+    .btn-row { display: flex; gap: 8px; }
+    .btn {
+      flex: 1;
+      padding: 0.7rem;
+      border: 1.5px solid var(--border2);
+      border-radius: var(--r);
+      background: transparent;
+      color: var(--ink2);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: var(--ease);
+    }
+    .btn:hover { background: var(--off); border-color: var(--g400); color: var(--g600); }
+    .btn-primary {
+      background: var(--g400);
+      border-color: var(--g400);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--g600); border-color: var(--g600); color: white; }
+
+    .panel-preview {
+      padding: 2rem 2.5rem;
+      overflow-y: auto;
+    }
+
+    .preview-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.75rem;
+    }
+    .preview-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .preview-sub {
+      font-size: 0.75rem;
+      color: var(--ink4);
+      margin-top: 2px;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 420px;
+      gap: 1rem;
+      text-align: center;
+    }
+    .empty-icon {
+      width: 64px; height: 64px;
+      border-radius: 16px;
+      background: var(--g50);
+      border: 1px solid var(--g100);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .empty-icon svg { width: 28px; height: 28px; stroke: var(--g400); fill: none; }
+    .empty-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ink2);
+    }
+    .empty-hint {
+      font-size: 0.82rem;
+      color: var(--ink4);
+    }
+
+    .diet-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      animation: fadeUp 0.4s ease forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .diet-card-header {
+      background: linear-gradient(135deg, var(--g800) 0%, var(--g600) 100%);
+      padding: 1.75rem 2rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .diet-card-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: white;
+      letter-spacing: -0.01em;
+    }
+    .diet-card-meta {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 4px;
+    }
+    .diet-card-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+    }
+
+    .macro-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+    .macro-item {
+      padding: 1.25rem 0;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .macro-item:last-child { border-right: none; }
+    .macro-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--g600);
+      line-height: 1;
+    }
+    .macro-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink4);
+      margin-top: 4px;
+    }
+
+    .diet-body { padding: 1.5rem 2rem; }
+    .block-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink4);
+      margin-bottom: 0.85rem;
+    }
+    .meal-list { display: flex; flex-direction: column; }
+    .meal-row {
+      display: grid;
+      grid-template-columns: 140px 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .meal-row:last-child { border-bottom: none; }
+    .meal-time {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--g600);
+    }
+    .meal-name-txt {
+      font-size: 0.85rem;
+      color: var(--ink2);
+    }
+    .meal-kcal {
+      font-size: 0.75rem;
+      color: var(--ink4);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .supp-block {
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: var(--g50);
+      border-radius: var(--r);
+      border-left: 3px solid var(--g400);
+    }
+    .supp-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 0.6rem; }
+    .supp-tag {
+      font-size: 0.78rem;
+      font-weight: 500;
+      background: var(--g100);
+      color: var(--g800);
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+    }
+
+
+    .diet-notes {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--ink3);
+      font-style: italic;
+      line-height: 1.8;
+    }
+
+    .history-section { margin-top: 2rem; }
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .history-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink4);
+    }
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px;
+    }
+    .history-item {
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+    }
+    .history-item-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink2);
+    }
+    .history-item-meta {
+      font-size: 0.72rem;
+      color: var(--ink4);
+    }
+    .history-item-actions {
+      display: flex;
+      gap: 5px;
+      margin-top: 6px;
+    }
+    .hist-btn {
+      flex: 1;
+      padding: 0.3rem 0;
+      font-size: 0.72rem;
+      font-weight: 500;
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      background: transparent;
+      color: var(--ink3);
+      cursor: pointer;
+      transition: var(--ease);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .hist-btn:hover { background: var(--g50); border-color: var(--g400); color: var(--g600); }
+    .hist-btn.edit { border-color: var(--g200); color: var(--g600); }
+    .hist-btn.edit:hover { background: var(--g50); }
+
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(13,51,32,0.45);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      width: 520px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 60px rgba(13,51,32,0.25);
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      padding: 1.5rem 1.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .modal-close {
+      width: 32px; height: 32px;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink3);
+      font-size: 1.1rem;
+      transition: var(--ease);
+    }
+    .modal-close:hover { background: var(--off); }
+    .modal-body {
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .modal-footer {
+      padding: 1rem 1.75rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .modal-footer .btn { flex: none; padding: 0.6rem 1.4rem; }
+
+    .modal-meal-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 70px;
+      gap: 8px;
+      align-items: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-meal-row:last-child { border-bottom: none; }
+    .modal-meal-row input {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.82rem;
+    }
+    .modal-meal-time { font-size: 0.75rem; font-weight: 500; color: var(--g600); }
+
+    .modal-supps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--g100); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 18 18"><path d="M9 2C5.13 2 2 5.13 2 9s3.13 7 7 7 7-3.13 7-7S12.87 2 9 2zm0 2.5c1.38 0 2.5 1.12 2.5 2.5S10.38 9.5 9 9.5 6.5 8.38 6.5 7 7.62 4.5 9 4.5zm0 9c-1.75 0-3.29-.9-4.2-2.26C5.17 10.04 7.53 9.25 9 9.25s3.83.79 4.2 2.49C12.29 13.1 10.75 14 9 14z"/></svg>
+    </div>
+    <span class="logo-text">Nutri<span>Craft</span></span>
+  </div>
+  <span class="header-tag">Protocolo Nutraceutico</span>
+</header>
+
+<main>
+  <!-- ── PAINEL BUILD ── -->
+  <aside class="panel-build">
+
+    <div class="section-block">
+      <div class="section-label">Templates <span class="badge">Prototype</span></div>
+      <div class="templates-grid" id="templatesList"></div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Dados Pessoais <span class="badge">Builder</span></div>
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="inputNome" placeholder="ex.: Ana Beatriz" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Peso (kg)</label>
+          <input type="number" id="inputPeso" placeholder="70" min="30" max="250" />
+        </div>
+        <div class="form-group">
+          <label>Altura (cm)</label>
+          <input type="number" id="inputAltura" placeholder="170" min="100" max="250" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Objetivo</label>
+        <select id="inputObjetivo">
+          <option value="">Selecione...</option>
+          <option value="emagrecimento">Emagrecimento</option>
+          <option value="ganho_muscular">Ganho Muscular</option>
+          <option value="saude_geral">Saúde Geral</option>
+          <option value="longevidade">Longevidade</option>
+          <option value="energia">Alta Performance</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nível de Atividade</label>
+        <select id="inputAtividade">
+          <option value="1.2">Sedentário</option>
+          <option value="1.375">Levemente Ativo</option>
+          <option value="1.55" selected>Moderadamente Ativo</option>
+          <option value="1.725">Muito Ativo</option>
+          <option value="1.9">Atleta</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Preferências</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Restrições</label>
+          <select id="inputRestricao">
+            <option value="nenhuma">Nenhuma</option>
+            <option value="vegetariano">Vegetariano</option>
+            <option value="vegano">Vegano</option>
+            <option value="sem_gluten">Sem Glúten</option>
+            <option value="sem_lactose">Sem Lactose</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Refeições</label>
+          <select id="inputRefeicoes">
+            <option value="3">3 refeições</option>
+            <option value="4">4 refeições</option>
+            <option value="5" selected>5 refeições</option>
+            <option value="6">6 refeições</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Suplementos</div>
+      <div class="supps-grid" id="supplementsGrid"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="buildDiet()">Gerar Dieta</button>
+      <button class="btn" onclick="cloneDiet()">Clonar</button>
+    </div>
+
+  </aside>
+
+  <!-- ── PAINEL PREVIEW ── -->
+  <section class="panel-preview">
+    <div class="preview-topbar">
+      <div>
+        <p class="preview-title">Protocolo Nutricional</p>
+        <p class="preview-sub">Resultado gerado pelo Builder</p>
+      </div>
+    </div>
+
+    <div id="previewArea">
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
+        </div>
+        <p class="empty-title">Nenhuma dieta gerada ainda</p>
+        <p class="empty-hint">Preencha os dados e clique em Gerar Dieta</p>
+      </div>
+    </div>
+
+    <div class="history-section" id="historySection" style="display:none">
+      <div class="history-header">
+        <span class="history-label">Clones — edite ou visualize</span>
+      </div>
+      <div class="history-grid" id="historyGrid"></div>
+    </div>
+  </section>
+</main>
+
+<!-- ── MODAL DE EDIÇÃO DE CLONE ── -->
+<div class="modal-overlay" id="editModal" style="display:none" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <span class="modal-title">Editar Clone</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Salvar Alterações</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  //  CLASSES — PROTOTYPE + BUILDER
+
+  class NutraceuticDiet {
+    constructor() {
+      this.nome = ''; this.objetivo = ''; this.peso = 0; this.altura = 0;
+      this.atividade = 1.55; this.restricao = 'nenhuma'; this.numRefeicoes = 5;
+      this.suplementos = []; this.refeicoes = [];
+      this.calorias = 0; this.proteina = 0; this.carboidrato = 0; this.gordura = 0;
+      this.notas = ''; this.criadoEm = new Date().toLocaleDateString('pt-BR');
+    }
+    clone() {
+      const c = new NutraceuticDiet();
+      c.nome = this.nome + ' (clone)'; c.objetivo = this.objetivo;
+      c.peso = this.peso; c.altura = this.altura; c.atividade = this.atividade;
+      c.restricao = this.restricao; c.numRefeicoes = this.numRefeicoes;
+      c.suplementos = [...this.suplementos];
+      c.refeicoes = this.refeicoes.map(r => ({ ...r }));
+      c.calorias = this.calorias; c.proteina = this.proteina;
+      c.carboidrato = this.carboidrato; c.gordura = this.gordura;
+      c.notas = this.notas;
+      c.criadoEm = new Date().toLocaleDateString('pt-BR');
+      return c;
+    }
+  }
+
+  const PROTOTYPES = {
+    emagrecimento: (() => {
+      const d = new NutraceuticDiet(); d.nome = 'Protocolo Emagrecimento'; d.objetivo = 'emagrecimento'; d.peso = 70; d.altura = 170; d.atividade = 1.375; d.restricao = 'nenhuma'; d.numRefeicoes = 5; d.suplementos = ['Ômega-3','Vitamina D','Magnésio']; return d;
+    })(),
+    performance: (() => {
+      const d = new NutraceuticDiet(); d.nome = 'Protocolo Performance'; d.objetivo = 'energia'; d.peso = 80; d.altura = 178; d.atividade = 1.725; d.restricao = 'nenhuma'; d.numRefeicoes = 6; d.suplementos = ['Creatina','Beta-Alanina','Ômega-3','Vitamina D']; return d;
+    })(),
+    longevidade: (() => {
+      const d = new NutraceuticDiet(); d.nome = 'Protocolo Longevidade'; d.objetivo = 'longevidade'; d.peso = 72; d.altura = 168; d.atividade = 1.55; d.restricao = 'nenhuma'; d.numRefeicoes = 4; d.suplementos = ['Resveratrol','Vitamina D','Ômega-3','Coenzima Q10','Zinco']; return d;
+    })(),
+    vegano: (() => {
+      const d = new NutraceuticDiet(); d.nome = 'Protocolo Vegano'; d.objetivo = 'saude_geral'; d.peso = 65; d.altura = 165; d.atividade = 1.55; d.restricao = 'vegano'; d.numRefeicoes = 5; d.suplementos = ['Vitamina B12','Ferro','Vitamina D','Ômega-3']; return d;
+    })(),
+  };
+
+  const PROTOTYPE_LABELS = {
+    emagrecimento: { nome: 'Emagrecimento', tag: 'Deficit' },
+    performance:   { nome: 'Alta Performance', tag: 'Atleta' },
+    longevidade:   { nome: 'Longevidade', tag: 'Anti-aging' },
+    vegano:        { nome: 'Vegano', tag: 'Plant-based' },
+  };
+
+  class DietBuilder {
+    constructor() { this._diet = new NutraceuticDiet(); }
+    setDadosPessoais(nome, peso, altura, atividade) {
+      this._diet.nome = nome; this._diet.peso = Number(peso);
+      this._diet.altura = Number(altura); this._diet.atividade = Number(atividade);
+      return this;
+    }
+    setObjetivo(objetivo, restricao, numRefeicoes) {
+      this._diet.objetivo = objetivo; this._diet.restricao = restricao;
+      this._diet.numRefeicoes = Number(numRefeicoes); return this;
+    }
+    setSuplementos(s) { this._diet.suplementos = [...s]; return this; }
+    calcularMacros() {
+      const { peso, altura, atividade, objetivo } = this._diet;
+      const tmb = (10*peso) + (6.25*altura) - (5*30) + 5;
+      let tdee = Math.round(tmb * atividade);
+      const ajuste = { emagrecimento:-400, ganho_muscular:+300, saude_geral:0, longevidade:-150, energia:+200 };
+      this._diet.calorias = tdee + (ajuste[objetivo] || 0);
+      const distrib = {
+        emagrecimento:  {p:0.35,c:0.35,g:0.30}, ganho_muscular:{p:0.30,c:0.45,g:0.25},
+        saude_geral:    {p:0.25,c:0.45,g:0.30}, longevidade:{p:0.25,c:0.40,g:0.35},
+        energia:        {p:0.25,c:0.50,g:0.25},
+      };
+      const m = distrib[objetivo] || distrib.saude_geral;
+      this._diet.proteina    = Math.round((this._diet.calorias * m.p) / 4);
+      this._diet.carboidrato = Math.round((this._diet.calorias * m.c) / 4);
+      this._diet.gordura     = Math.round((this._diet.calorias * m.g) / 9);
+      return this;
+    }
+    montarRefeicoes() {
+      const { numRefeicoes, restricao, objetivo, calorias } = this._diet;
+      const proteinas = (restricao==='vegano'||restricao==='vegetariano')
+        ? ['Tofu grelhado','Lentilha','Grão-de-bico','Tempeh','Proteína de ervilha']
+        : ['Frango grelhado','Salmão assado','Ovo caipira','Atum','Carne magra'];
+      const carbos = restricao==='sem_gluten'
+        ? ['Arroz integral','Batata-doce','Quinoa','Inhame','Mandioca']
+        : ['Aveia','Arroz integral','Batata-doce','Macarrão integral','Quinoa'];
+      const gorduras = ['Abacate','Castanha-do-pará','Azeite extra-virgem','Amêndoas'];
+      const vegetais = ['Brócolis','Espinafre','Cenoura','Abobrinha','Tomate-cereja'];
+      const horarios = { 3:['07:00','13:00','19:30'], 4:['07:00','12:00','16:00','20:00'], 5:['07:00','10:30','13:00','16:30','20:00'], 6:['06:30','09:30','12:30','15:30','18:30','21:00'] };
+      const nomes = { 3:['Café da Manhã','Almoço','Jantar'], 4:['Café da Manhã','Almoço','Lanche da Tarde','Jantar'], 5:['Café da Manhã','Lanche Matinal','Almoço','Lanche da Tarde','Jantar'], 6:['Pré-Treino','Café da Manhã','Almoço','Lanche','Jantar','Ceia'] };
+      const horas = horarios[numRefeicoes]||horarios[5];
+      const nomesRef = nomes[numRefeicoes]||nomes[5];
+      const pesos = { 3:[0.3,0.4,0.3], 4:[0.25,0.35,0.15,0.25], 5:[0.2,0.1,0.35,0.1,0.25], 6:[0.1,0.2,0.3,0.1,0.25,0.05] };
+      const dist = pesos[numRefeicoes]||pesos[5];
+      this._diet.refeicoes = horas.map((hora, i) => {
+        const kcal = Math.round(calorias * dist[i]);
+        const prot = proteinas[i%proteinas.length], carbo = carbos[i%carbos.length];
+        const gord = gorduras[i%gorduras.length], veg = vegetais[i%vegetais.length];
+        let composicao;
+        if (nomesRef[i].includes('Lanche')) composicao = `${prot} · ${gord}`;
+        else if (nomesRef[i]==='Ceia') composicao = `Iogurte natural · ${gord}`;
+        else composicao = `${prot} · ${carbo} · ${veg}`;
+        return { hora, nome: nomesRef[i], composicao, kcal };
+      });
+      const labels = { emagrecimento:'déficit calórico controlado', ganho_muscular:'superávit calórico com alto aporte proteico', saude_geral:'equilíbrio entre os macronutrientes', longevidade:'restrição calórica moderada e foco em antioxidantes', energia:'carregamento de carboidratos estratégico' };
+      this._diet.notas = `Protocolo baseado em ${labels[objetivo]||'equilíbrio nutricional'}. Hidrate-se com no mínimo ${Math.round(this._diet.peso*35/1000*10)/10}L de água por dia. Suplementação prescrita deve ser avaliada com profissional de saúde.`;
+      return this;
+    }
+    build() { return this._diet; }
+  }
+
+  //  ESTADO
+  let dietaAtual = null;
+  let historico  = [];
+  let editandoIdx = null;
+
+  const SUPLEMENTOS_DISPONIVEIS = [
+    'Ômega-3','Vitamina D','Magnésio','Vitamina C',
+    'Zinco','Vitamina B12','Ferro','Creatina',
+    'Beta-Alanina','Coenzima Q10','Resveratrol','Probiótico',
+  ];
+
+  const OBJ_LABEL = {
+    emagrecimento:'Emagrecimento', ganho_muscular:'Ganho Muscular',
+    saude_geral:'Saúde Geral', longevidade:'Longevidade', energia:'Alta Performance'
+  };
+
+
+  //  INIT
+
+  function init() {
+    // Templates
+    const tl = document.getElementById('templatesList');
+    Object.entries(PROTOTYPE_LABELS).forEach(([key,info]) => {
+      const card = document.createElement('div');
+      card.className = 'template-card'; card.dataset.key = key;
+      card.innerHTML = `<div class="t-name">${info.nome}</div><div class="t-tag">${info.tag}</div>`;
+      card.addEventListener('click', () => carregarTemplate(key));
+      tl.appendChild(card);
+    });
+    // Suplementos
+    const sg = document.getElementById('supplementsGrid');
+    SUPLEMENTOS_DISPONIVEIS.forEach(sup => {
+      const lbl = document.createElement('label');
+      lbl.className = 'supp-item';
+      lbl.innerHTML = `<input type="checkbox" value="${sup}" class="supp-check" /><span>${sup}</span>`;
+      sg.appendChild(lbl);
+    });
+  }
+
+
+  //  TEMPLATE (PROTOTYPE)
+
+  function carregarTemplate(key) {
+    document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+    document.querySelector(`[data-key="${key}"]`).classList.add('active');
+    const clone = PROTOTYPES[key].clone();
+    document.getElementById('inputNome').value      = clone.nome;
+    document.getElementById('inputObjetivo').value  = clone.objetivo;
+    document.getElementById('inputPeso').value      = clone.peso;
+    document.getElementById('inputAltura').value    = clone.altura;
+    document.getElementById('inputAtividade').value = clone.atividade;
+    document.getElementById('inputRestricao').value = clone.restricao;
+    document.getElementById('inputRefeicoes').value = clone.numRefeicoes;
+    document.querySelectorAll('.supp-check').forEach(cb => {
+      cb.checked = clone.suplementos.includes(cb.value);
+    });
+  }
+
+
+  //BUILDER
+
+  function buildDiet() {
+    const nome     = document.getElementById('inputNome').value || 'Minha Dieta';
+    const peso     = document.getElementById('inputPeso').value || 70;
+    const altura   = document.getElementById('inputAltura').value || 170;
+    const atividade= document.getElementById('inputAtividade').value;
+    const objetivo = document.getElementById('inputObjetivo').value || 'saude_geral';
+    const restricao= document.getElementById('inputRestricao').value;
+    const numRef   = document.getElementById('inputRefeicoes').value;
+    const supps    = [...document.querySelectorAll('.supp-check:checked')].map(c => c.value);
+
+    dietaAtual = new DietBuilder()
+      .setDadosPessoais(nome, peso, altura, atividade)
+      .setObjetivo(objetivo, restricao, numRef)
+      .setSuplementos(supps)
+      .calcularMacros()
+      .montarRefeicoes()
+      .build();
+
+    renderDiet(dietaAtual, 'previewArea');
+  }
+
+
+  //  CLONE (PROTOTYPE)
+
+  function cloneDiet() {
+    if (!dietaAtual) { alert('Gere uma dieta primeiro antes de clonar.'); return; }
+    const clone = dietaAtual.clone();
+    historico.push(clone);
+    renderHistorico();
+  }
+
+
+  //  RENDER DIET
+
+  function renderDiet(diet, containerId) {
+    const rows = diet.refeicoes.map(r => `
+      <div class="meal-row">
+        <span class="meal-time">${r.hora} · ${r.nome}</span>
+        <span class="meal-name-txt">${r.composicao}</span>
+        <span class="meal-kcal">${r.kcal} kcal</span>
+      </div>`).join('');
+
+    const supTags = diet.suplementos.length > 0
+      ? diet.suplementos.map(s => `<span class="supp-tag">${s}</span>`).join('')
+      : '<span class="supp-tag">Nenhum selecionado</span>';
+
+    document.getElementById(containerId).innerHTML = `
+      <div class="diet-card">
+        <div class="diet-card-header">
+          <div>
+            <p class="diet-card-name">${diet.nome}</p>
+            <p class="diet-card-meta">Criado em ${diet.criadoEm}</p>
+          </div>
+          <span class="diet-card-badge">${OBJ_LABEL[diet.objetivo]||'Personalizado'}</span>
+        </div>
+        <div class="macro-strip">
+          <div class="macro-item"><div class="macro-val">${diet.calorias}</div><div class="macro-label">kcal / dia</div></div>
+          <div class="macro-item"><div class="macro-val">${diet.proteina}g</div><div class="macro-label">Proteína</div></div>
+          <div class="macro-item"><div class="macro-val">${diet.carboidrato}g</div><div class="macro-label">Carboidrato</div></div>
+          <div class="macro-item"><div class="macro-val">${diet.gordura}g</div><div class="macro-label">Gordura</div></div>
+        </div>
+        <div class="diet-body">
+          <p class="block-label">Distribuição de Refeições</p>
+          <div class="meal-list">${rows}</div>
+          <div class="supp-block">
+            <p class="block-label" style="color:var(--g600)">Suplementação Nutraceutica</p>
+            <div class="supp-tags">${supTags}</div>
+          </div>
+          <p class="diet-notes">${diet.notas}</p>
+        </div>
+      </div>`;
+  }
+
+
+  //  HISTÓRICO
+
+  function renderHistorico() {
+    const sec = document.getElementById('historySection');
+    const grid = document.getElementById('historyGrid');
+    sec.style.display = 'block';
+    grid.innerHTML = historico.map((d, i) => `
+      <div class="history-item">
+        <div class="history-item-name">${d.nome}</div>
+        <div class="history-item-meta">${d.calorias} kcal · ${d.criadoEm}</div>
+        <div class="history-item-actions">
+          <button class="hist-btn" onclick="verClone(${i})">Ver</button>
+          <button class="hist-btn edit" onclick="editarClone(${i})">Editar</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function verClone(i) {
+    renderDiet(historico[i], 'previewArea');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+
+  //  EDIÇÃO DO CLONE — Modal
+
+  function editarClone(i) {
+    editandoIdx = i;
+    const d = historico[i];
+    const supOpts = SUPLEMENTOS_DISPONIVEIS.map(s =>
+      `<label class="supp-item"><input type="checkbox" value="${s}" class="modal-supp-check" ${d.suplementos.includes(s)?'checked':''}><span>${s}</span></label>`
+    ).join('');
+
+    const refeicaoInputs = d.refeicoes.map((r, ri) => `
+      <div class="modal-meal-row">
+        <span class="modal-meal-time">${r.hora} · ${r.nome}</span>
+        <input type="text" class="meal-comp-input" data-idx="${ri}" value="${r.composicao}" placeholder="Composição" />
+        <input type="number" class="meal-kcal-input" data-idx="${ri}" value="${r.kcal}" min="0" max="2000" />
+      </div>`).join('');
+
+    document.getElementById('modalBody').innerHTML = `
+      <div class="form-group">
+        <label>Nome da Dieta</label>
+        <input type="text" id="editNome" value="${d.nome}" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Calorias Totais (kcal)</label>
+          <input type="number" id="editCal" value="${d.calorias}" />
+        </div>
+        <div class="form-group">
+          <label>Objetivo</label>
+          <select id="editObj">
+            <option value="emagrecimento" ${d.objetivo==='emagrecimento'?'selected':''}>Emagrecimento</option>
+            <option value="ganho_muscular" ${d.objetivo==='ganho_muscular'?'selected':''}>Ganho Muscular</option>
+            <option value="saude_geral" ${d.objetivo==='saude_geral'?'selected':''}>Saúde Geral</option>
+            <option value="longevidade" ${d.objetivo==='longevidade'?'selected':''}>Longevidade</option>
+            <option value="energia" ${d.objetivo==='energia'?'selected':''}>Alta Performance</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Proteína (g)</label>
+          <input type="number" id="editProt" value="${d.proteina}" />
+        </div>
+        <div class="form-group">
+          <label>Carboidrato (g)</label>
+          <input type="number" id="editCarb" value="${d.carboidrato}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Gordura (g)</label>
+        <input type="number" id="editGord" value="${d.gordura}" />
+      </div>
+      <div>
+        <label style="margin-bottom:8px;display:block">Refeições</label>
+        ${refeicaoInputs}
+      </div>
+      <div>
+        <label style="margin-bottom:8px;display:block">Suplementos</label>
+        <div class="modal-supps-grid">${supOpts}</div>
+      </div>
+      <div class="form-group">
+        <label>Notas</label>
+        <input type="text" id="editNotas" value="${d.notas}" />
+      </div>`;
+
+    document.getElementById('editModal').style.display = 'flex';
+  }
+
+  function saveEdit() {
+    if (editandoIdx === null) return;
+    const d = historico[editandoIdx];
+    d.nome        = document.getElementById('editNome').value;
+    d.calorias    = Number(document.getElementById('editCal').value);
+    d.objetivo    = document.getElementById('editObj').value;
+    d.proteina    = Number(document.getElementById('editProt').value);
+    d.carboidrato = Number(document.getElementById('editCarb').value);
+    d.gordura     = Number(document.getElementById('editGord').value);
+    d.notas       = document.getElementById('editNotas').value;
+
+    document.querySelectorAll('.meal-comp-input').forEach(inp => {
+      d.refeicoes[inp.dataset.idx].composicao = inp.value;
+    });
+    document.querySelectorAll('.meal-kcal-input').forEach(inp => {
+      d.refeicoes[inp.dataset.idx].kcal = Number(inp.value);
+    });
+
+    d.suplementos = [...document.querySelectorAll('.modal-supp-check:checked')].map(c => c.value);
+
+    closeModal();
+    renderHistorico();
+    renderDiet(d, 'previewArea');
+  }
+
+  function closeModal() {
+    document.getElementById('editModal').style.display = 'none';
+    editandoIdx = null;
+  }
+
+  function closeModalOutside(e) {
+    if (e.target.id === 'editModal') closeModal();
+  }
+
+  init();
+</script>
+</body>
+</html>
